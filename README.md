@@ -1,7 +1,7 @@
 <a id="library"></a>
 # SonarPing
 Library for ultrasonic sensors with two control pins, preferably HC-SR04.
-- Library uses function __pulseIn()__ for measuring sound reflection time periods.
+- Library uses function *pulseIn()* for measuring sound reflection time periods.
 - Library intentionally uses only SI measurement units. The conversion to imperial units should be provided in a sketch code or in a separate library in order to avoid duplicities in code using multiple libraries with the same conversion functionality.
 - Library does not intentionally use statistical processing of measured values (ping time, distance). There are separate libraries for that purpose to use in order to avoid duplicities in code.
 - Library uses the temperature compensation for air speed. It is limited to the temperature range from -128 to +127 centigrades (degrees of Celsius), which contains usual working range of sensors.
@@ -23,7 +23,7 @@ Library for ultrasonic sensors with two control pins, preferably HC-SR04.
 - **SONARPING\_NAN**: Represents undefined ping time or distance
 - **SONARPING\_DISTANCE\_MIN**: Minimal measuring distance (cm)
 - **SONARPING\_DISTANCE\_MAX**: Maximal measuring distance (cm)
-- **SONARPING\TEMPERATURE\_DEF**: Default ambient temperature (degC)
+- **SONARPING\_TEMPERATURE\_DEF**: Default ambient temperature (degC)
 - **SONARPING\_DELAY\_INTERPING**: Minimal delay in milliseconds between pings from specification
 
  
@@ -79,9 +79,9 @@ sonar = SonarPing(2, 3, 100, 50); // Measured limited range, e.g., a water level
 ```
 
 #### See also
-[getDistanceMin()](#getDistanceMin)
+[getDistanceMin()](#getDistanceRange)
 
-[getDistanceMax()](#getDistanceMax)
+[getDistanceMax()](#getDistanceRange)
 
 [Back to interface](#interface)
 
@@ -101,8 +101,6 @@ None
 Distance in centimeters
 
 #### See also
-[SonarPing()](#SonarPing)
-
 [setTemperature()](#setTemperature)
 
 [Back to interface](#interface)
@@ -143,7 +141,7 @@ The method stores the ambient air temperature to the instance object.
 
 #### Parameters
 <a id="temperature"></a>
-- **temperature**: Ambient air temperature in centigrades.
+- **temperature**: Ambient air temperature in whole centigrades.
   - *Valid values*: integer in the range -128 to +127
   - *Default value*: 20
 
@@ -151,8 +149,6 @@ The method stores the ambient air temperature to the instance object.
 None
 
 #### See also
-[SonarPing()](#SonarPing)
-
 [getTemperature()](#getTemperature)
 
 [Back to interface](#interface)
@@ -170,7 +166,7 @@ The method returns currently set temperature in centigrades for correction.
 None
 
 #### Returns
-Temperature in centigrades.
+Temperature in whole centigrades.
 
 #### See also
 [setTemperature()](#setTemperature)
