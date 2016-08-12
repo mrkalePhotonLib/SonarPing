@@ -203,20 +203,5 @@ private:
 */
   uint16_t pingTime();
 
-/*
-  Convert distance to sound round trip time.
-
-  DESCRIPTION:
-  The method calculates time in microsecods that sound takes at round trip
-  from sensord to a reflector distant input centimeters and back.
-  - Method corrects sound speed by temperature stored in class object
-    before measurement.
-
-  PARAMETERS: none
-
-  RETURN: Sound round trip time in microseconds
-*/
-  uint16_t distance2time(uint16_t distance);
-
 };
 #endif

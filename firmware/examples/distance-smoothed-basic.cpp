@@ -41,17 +41,16 @@ const byte PIN_TRIGGER = D2;
 const byte PING_ECHO   = D6;
 
 // Measuring distance in whole centimeters
-unsigned int distance = 0;
-SonarPing sonar(PIN_TRIGGER, PING_ECHO);
-SmoothSensorData samples();
-
+SonarPing sonar = SonarPing(PIN_TRIGGER, PING_ECHO);
+SmoothSensorData samples = SmoothSensorData();
+unsigned int distance = SONARPING_NAN;
 
 void setup() {
   // Start processing timers
   timerMeasure.start();
   timerPublish.start();
   // Publish sketch identification as public events
-  Particle.publish("Sketch", String::format("%s %s", SKETCH_NAME, SKETCH_VERSION));
+  Particle.publish("Sketch",  String::format("%s %s", SKETCH_NAME, SKETCH_VERSION));
   Particle.publish("Library", String::format("%s %s", "SonarPing", SONARPING_VERSION));
   Particle.publish("Library", String::format("%s %s", "SmoothSensorData", SMOOTHSENSORDATA_VERSION));
 }

@@ -40,7 +40,7 @@ void setup() {
   timerMeasure.start();
   timerPublish.start();
   // Publish sketch identification as public events
-  Particle.publish("Sketch", String::format("%s %s", SKETCH_NAME, SKETCH_VERSION));
+  Particle.publish("Sketch",  String::format("%s %s", SKETCH_NAME, SKETCH_VERSION));
   Particle.publish("Library", String::format("%s %s", "SonarPing", SONARPING_VERSION));
 }
 

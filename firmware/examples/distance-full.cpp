@@ -50,7 +50,7 @@ void setup() {
 void loop() {}
 
 void measuring() {
-  // Temperature compensation
+// Temperature compensation (random maximum excluded)
   sonar.setTemperature(random(TEMPERATURE_MIN, TEMPERATURE_MAX + 1));
   // Measure temperature compensated distance
   distance = sonar.getDistance();

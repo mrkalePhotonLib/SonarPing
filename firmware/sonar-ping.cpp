@@ -26,25 +26,24 @@ uint16_t SonarPing::pingTime()
   digitalWriteFast(_pinTrig, HIGH);
   delayMicroseconds(10);  // Wait for trigger pin become HIGH - from specs
   digitalWriteFast(_pinTrig, LOW);
-  // Measure echo signal
+  // Measure duration of echo signal
   pingTime = pulseIn(_pinEcho, HIGH);
-  // Pulse is outside of the expected range
-  if (pingTime < distance2time(_minDistance)) return SONARPING_NAN;
-  if (pingTime > distance2time(_maxDistance)) return SONARPING_NAN;
-  //Return correct ping time
   return pingTime;
 }
 
 // Measure distance
 uint16_t SonarPing::getDistance()
 {
-  uint16_t ping;
+  uint16_t ping, distance;
   uint8_t  pace;
   ping = pingTime();
-  if (ping == SONARPING_NAN) return SONARPING_NAN;
   pace = soundPace();
   // Round up distance to whole centimeters
-  return (ping + pace - 1) / pace;
+  distance = (ping + pace - 1) / pace;
+  // Check distance to limits
+  if (distance < _minDistance) return SONARPING_NAN;
+  if (distance > _maxDistance) return SONARPING_NAN;
+  return distance;
 }
 
 // Store current temperature for further calculations
@@ -57,12 +56,6 @@ void SonarPing::setTemperature(int8_t temperature)
 uint8_t SonarPing::soundPace(void)
 {
   return (2000000.0 / (33130.0 + 60.6 * _temperature));
-}
-
-// Sound travel time
-uint16_t SonarPing::distance2time(uint16_t distance)
-{
-  return distance * 2 * soundPace();
 }
 
 // Getters
