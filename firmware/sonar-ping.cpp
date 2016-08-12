@@ -1,4 +1,4 @@
-#include "SonarPing.h"
+#include "sonar-ping.h"
 
 SonarPing::SonarPing(uint8_t trigger_pin, uint8_t echo_pin, \
   uint16_t distance_max, uint16_t distance_min)
@@ -44,7 +44,7 @@ uint16_t SonarPing::getDistance()
   if (ping == SONARPING_NAN) return SONARPING_NAN;
   pace = soundPace();
   // Round up distance to whole centimeters
-  return (pingTime() + pace - 1) / pace;
+  return (ping + pace - 1) / pace;
 }
 
 // Store current temperature for further calculations
