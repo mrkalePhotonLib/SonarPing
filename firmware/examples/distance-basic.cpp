@@ -22,23 +22,18 @@
 #define SKETCH_NAME "DISTANCE-BASIC"
 
 // Processing timers
-const unsigned int MEASURE_PERIOD = 1000;   // Timer period in miliseconds for measuring
-const unsigned int PUBLISH_PERIOD = 60000;  // Timer period in miliseconds for publishing events
+const unsigned int MEASURE_PERIOD = 30000;   // Timer period in ms
 Timer timerMeasure(MEASURE_PERIOD, measuring);
-Timer timerPublish(PUBLISH_PERIOD, publishing);
 
 // Ultrasonic sensor hardware connection
 const byte PIN_TRIGGER = D2;
 const byte PING_ECHO   = D6;
 
 // Measuring distance in whole centimeters
-SonarPing sonar = SonarPing(PIN_TRIGGER, PING_ECHO);
-unsigned int distance = SONARPING_NAN;
+SonarPing sonar(PIN_TRIGGER, PING_ECHO);
 
 void setup() {
-  // Start processing timers
   timerMeasure.start();
-  timerPublish.start();
   // Publish sketch identification as public events
   Particle.publish("Sketch",  String::format("%s %s", SKETCH_NAME, SKETCH_VERSION));
   Particle.publish("Library", String::format("%s %s", "SonarPing", SONARPING_VERSION));
@@ -47,9 +42,6 @@ void setup() {
 void loop() {}
 
 void measuring() {
-  distance = sonar.getDistance();
-}
-
-void publishing() {
+  unsigned int distance = sonar.getDistance();
   Particle.publish("Distance", String(distance));
 }

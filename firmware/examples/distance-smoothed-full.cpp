@@ -36,10 +36,8 @@
 #define SKETCH_NAME "DISTANCE-SMOOTHED-FULL"
 
 // Processing timers
-const unsigned int MEASURE_PERIOD = 1000;   // Timer period in miliseconds for measuring
-const unsigned int PUBLISH_PERIOD = 60000;  // Timer period in miliseconds for publishing events
+const unsigned int MEASURE_PERIOD = 30000;   // Timer period in ms
 Timer timerMeasure(MEASURE_PERIOD, measuring);
-Timer timerPublish(PUBLISH_PERIOD, publishing);
 
 // Ultrasonic sensor hardware connection
 const byte PIN_TRIGGER = D2;
@@ -50,21 +48,15 @@ const unsigned int DISTANCE_MIN = 5;
 const unsigned int DISTANCE_MAX = 250;
 const byte TEMPERATURE_MIN = 10;
 const byte TEMPERATURE_MAX = 40;
-SonarPing sonar = SonarPing(PIN_TRIGGER, PING_ECHO, DISTANCE_MAX, DISTANCE_MIN);
+SonarPing sonar(PIN_TRIGGER, PING_ECHO, DISTANCE_MAX, DISTANCE_MIN);
 
 // Statistical processing
-const uint8_t SAMPLE_COUNT = 5;
-const uint8_t SAMPLE_DELAY = 0;
-SmoothSensorData samples = SmoothSensorData(SAMPLE_COUNT, SAMPLE_DELAY);
-unsigned int distMed = SONARPING_NAN;
-unsigned int distAvg = SONARPING_NAN;
-unsigned int distMin = SONARPING_NAN;
-unsigned int distMax = SONARPING_NAN;
+const byte SAMPLE_COUNT = 5;
+const byte SAMPLE_DELAY = 0;
+SmoothSensorData samples(SAMPLE_COUNT, SAMPLE_DELAY);
 
 void setup() {
-  // Start processing timers
   timerMeasure.start();
-  timerPublish.start();
   // Publish sketch identification as public events
   Particle.publish("Sketch",  String::format("%s %s", SKETCH_NAME, SKETCH_VERSION));
   Particle.publish("Library", String::format("%s %s", "SonarPing", SONARPING_VERSION));
@@ -73,18 +65,16 @@ void setup() {
 
 void loop() {}
 
+// Measuring and statistical processing
 void measuring() {
-// Temperature compensation (random maximum excluded)
+  // Temperature compensation (random maximum excluded)
   sonar.setTemperature(random(TEMPERATURE_MIN, TEMPERATURE_MAX + 1));
   // Measure temperature compensated distance in burst
   while (samples.registerData(sonar.getDistance()));
-  distMed = samples.getMedian();
-  distAvg = samples.getAverage();
-  distMin = samples.getMinimum();
-  distMax = samples.getMaximum();
-}
-
-void publishing() {
-  Particle.publish("Med/Avg/Min/Max", String::format("%3d / %3d / %3d / %3d", distMed, distAvg, distMin, distMax));
-  Particle.publish("Temp / DistMin / DistMax", String::format("%3d / %3d / %3d", sonar.getTemperature(), sonar.getDistanceMin(), sonar.getDistanceMax()));
+  unsigned int distMed = samples.getMedian();
+  unsigned int distAvg = samples.getAverage();
+  unsigned int distMin = samples.getMinimum();
+  unsigned int distMax = samples.getMaximum();
+  Particle.publish("Med/Avg/Min/Max", String::format("%3d/%3d/%3d/%3d", distMed, distAvg, distMin, distMax));
+  Particle.publish("Temp/DistMin/DistMax", String::format("%3d/%3d/%3d", sonar.getTemperature(), sonar.getDistanceMin(), sonar.getDistanceMax()));
 }
