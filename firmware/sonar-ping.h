@@ -96,6 +96,10 @@ public:
 */
   uint16_t getDistance();
 
+//-------------------------------------------------------------------------
+// Public setters
+//-------------------------------------------------------------------------
+
 /*
   Setter for ambient air temperature in centigrades for sound speed correction.
 
@@ -114,6 +118,10 @@ public:
 */
   void setTemperature(int8_t temperature = SONARPING_TEMPERATURE_DEF);
 
+//-------------------------------------------------------------------------
+// Public getters
+//-------------------------------------------------------------------------
+
 /*
   Getter of the actual temperature for sound speed correction.
 
@@ -127,30 +135,18 @@ public:
   int8_t getTemperature();
 
 /*
-  Getter of the actual minimal valid distance
+  Getters of the actual minimal and maximal valid distance
 
   DESCRIPTION:
-  The method returns currently set minimal distance valid for measuring.
-  - It is useful if the constructor has limited its input distance arguments.
+  The methods return current minimal or maximal distance valid for
+  measuring respectively set by the constructor.
 
   PARAMETERS: none
 
-  RETURN: Minimal valid distance
-*/
-  uint16_t getDistanceMin();
-
-/*
-  Getter of the actual maximal valid distance
-
-  DESCRIPTION:
-  The method returns currently set maximal distance valid for measuring.
-  - It is useful if the constructor limit its input distance arguments.
-
-  PARAMETERS: none
-
-  RETURN: Maximal valid distance
+  RETURN: Actual Minimal resp. maximal valid value
 */
   uint16_t getDistanceMax();
+  uint16_t getDistanceMin();
 
 private:
 //-------------------------------------------------------------------------

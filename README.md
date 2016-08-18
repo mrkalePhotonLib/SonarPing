@@ -31,10 +31,14 @@ Library for ultrasonic sensors with two control pins, preferably HC-SR04.
 ## Interface
 - [SonarPing()](#SonarPing)
 - [getDistance()](#getDistance)
+
+#### Setters
+- [setTemperature()](#setTemperature)
+
+#### Getters
+- [getTemperature()](#getTemperature)
 - [getDistanceMin()](#getDistanceRange)
 - [getDistanceMax()](#getDistanceRange)
-- [setTemperature()](#setTemperature)
-- [getTemperature()](#getTemperature)
 
 
 <a id="SonarPing"></a>
@@ -48,40 +52,41 @@ Constructor sets configuration parameters for library and measurement. They all 
     SonarPing(uint8_t trigger_pin, uint8_t echo_pin, uint16_t distance_max, uint16_t distance_min);
 
 #### Parameters
-<a id="trigger_pin"></a>
+<a id="prm_trigger_pin"></a>
 - **trigger_pin**: Digital pin number for sensor's trigger pin.
 
 
-<a id="echo_pin"></a>
+<a id="prm_echo_pin"></a>
 - **echo_pin**: Digital pin number for sensor's echo pin.
 
 
-<a id="distance_max"></a>
+<a id="prm_distance_max"></a>
 - **distance_max**: Maximal accepted measured distance from the sensor to a reflector in centimeters.
-  - *Valid values*: positive integer in the range [distance_min](#distance_min) to 500
-  - *Default value*: 500
+  - *Valid values*: non-negative integer in the range [distance_min](#prm_distance_min) to 500
+  - *Default value*: 500 ([SONARPING\_DISTANCE\_MAX](#constants))
 
 
-<a id="distance_min"></a>
+<a id="prm_distance_min"></a>
 - **distance_min**: Minimal accepted measured distance from the sensor to a reflector in centimeters.
-  - *Valid values*: positive integer in the range 2 to 500
-  - *Default value*: 2
+  - *Valid values*: non-negative integer in the range 2 to 500 [SONARPING\_DISTANCE\_MIN ~ SONARPING\_DISTANCE\_MAX](#constants)
+  - *Default value*: 2 ([SONARPING\_DISTANCE\_MIN](#constants))
 
 #### Returns
-Object perfoming the ultrasonic measurement.
+Object perfoming the ultrasonic measurement
 
 #### Example
 
 ``` cpp
-sonar = SonarPing(2, 3);          // Default measurement range
-sonar = SonarPing(2, 3, 100);     // Measured limited distance, e.g., a water barrel
-sonar = SonarPing(2, 3, 100, 50); // Measured limited range, e.g., a water level
+SonarPing sonar(2, 3);          // Default measurement range
+SonarPing sonar(2, 3, 100);     // Only specific maximal measured distance, e.g., a water barrel
+SonarPing sonar(2, 3, 100, 50); // Specific valid range, e.g., a water level
+SonarPing sonar(2, 3, SONARPING_DISTANCE_MAX, 10); // Only specific minimal measured distance
 ```
 
 #### See also
-[getDistanceMin()](#getDistanceRange)
-
 [getDistanceMax()](#getDistanceRange)
+
+[getDistanceMin()](#getDistanceRange)
 
 [Back to interface](#interface)
 
@@ -106,29 +111,6 @@ Distance in centimeters
 [Back to interface](#interface)
 
 
-<a id="getDistanceRange"></a>
-## getDistanceMin(), getDistanceMax()
-#### Description
-The methods return currently set minimal or maximal valid distance for correct measurement. It is useful if the constructor has limited its input distance arguments.
-
-#### Syntax
-    uint16_t getDistanceMin();
-    uint16_t getDistanceMax();
-
-#### Parameters
-None
-
-#### Returns
-Actual minimal and maximal value of the valid distance range.
-
-#### See also
-[SonarPing()](#SonarPing)
-
-[getDistance()](#getDistance)
-
-[Back to interface](#interface)
-
-
 <a id="setTemperature"></a>
 ## setTemperature()
 #### Description
@@ -143,13 +125,34 @@ The method stores the ambient air temperature to the instance object.
 <a id="temperature"></a>
 - **temperature**: Ambient air temperature in whole centigrades.
   - *Valid values*: integer in the range -128 to +127
-  - *Default value*: 20
+  - *Default value*: 20 ([SONARPING\_TEMPERATURE\_DEF](#constants))
 
 #### Returns
 None
 
 #### See also
 [getTemperature()](#getTemperature)
+
+[Back to interface](#interface)
+
+
+<a id="getDistanceRange"></a>
+## getDistanceMax(), getDistanceMin()
+#### Description
+The methods return currently minimal or maximal valid distance for correct measurement set by the constructor.
+
+#### Syntax
+    uint16_t getDistanceMax();
+    uint16_t getDistanceMin();
+
+#### Parameters
+None
+
+#### Returns
+Actual minimal and maximal value of the valid distance range.
+
+#### See also
+[SonarPing()](#SonarPing)
 
 [Back to interface](#interface)
 

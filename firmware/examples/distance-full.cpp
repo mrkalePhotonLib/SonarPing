@@ -20,9 +20,8 @@
 #define SKETCH_VERSION "1.0.0"
 #define SKETCH_NAME "DISTANCE-FULL"
 
-// Processing timers
-const unsigned int MEASURE_PERIOD = 30000;   // Timer period in ms
-Timer timerMeasure(MEASURE_PERIOD, measuring);
+const unsigned int PERIOD_MEASURE = 30000;   // Timer period in ms
+Timer timerMeasure(PERIOD_MEASURE, measuring);
 
 // Ultrasonic sensor hardware connection
 const byte PIN_TRIGGER = D2;

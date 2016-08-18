@@ -1,6 +1,7 @@
 /*
   NAME:
-  Full usage of SonarPing library with smoothing measured values
+  Full usage of SonarPing library with complete statistical processing of
+  measured values
 
   DESCRIPTION:
   This sketch demonstrates the use of SonarPing for distance measuring and
@@ -9,18 +10,20 @@
   * The ambient air temperature for sound speed compensation is simulated
     by random numbers in the range 10 to 40 centigrades.
   * The measuring distance is limited to the range 5 - 250 cm.
-  * For statistical processing the library SmoothSensorData is used.
-    While the distance is measured in whole centimeters, the smoothing
-    can be provided directly.
-  * The sketch measures in burst of consecutive measurements distant by
-    default time delay among them defined by statistical library. On the
-    other hand, the sonar library has built-in time delay between consecutive
-    ping according to the hardware specification. So that, the delay
-    between consecutive measurement can be avoide and set to 0 in order not
-    to increasing delay between measurements in vain.
+  * For statistical processing the library SmoothSensorData and
+    RunningStatistic is used.
+  * While the distance is measured in whole centimeters, the statistical 
+    processing can be provided directly.
+  * The sketch measures in burst of consecutive measurements and calculates
+    all provided statistical types from them by the library SmoothSensorData.
+    Then it calculates running statistics of the equivalent type by the
+    library RunningStatistic from previous serie of those measurement bursts.
+  * Because the sonar library as well as SmoothSensorData library have
+    built-in time delay between consecutive measurements, their delays are
+    cummulated. In specific case on of them or both should be set explicitly
+    by corresponding input arguments.
   * Because the limited measurement is used by SonarPing library directly,
-    the filtering data at statistical processing by SmoothSensorData library
-    is not necessary.
+    the filtering data at statistical processing is not necessary.
 
   LICENSE:
   This program is free software; you can redistribute it and/or modify
@@ -31,13 +34,13 @@
 */
 #include "sonar-ping/sonar-ping.h"
 #include "smooth-sensor-data/smooth-sensor-data.h"
+#include "running-statistic/running-statistic.h"
 
 #define SKETCH_VERSION "1.0.0"
 #define SKETCH_NAME "DISTANCE-SMOOTHED-FULL"
 
-// Processing timers
-const unsigned int MEASURE_PERIOD = 30000;   // Timer period in ms
-Timer timerMeasure(MEASURE_PERIOD, measuring);
+const unsigned int PERIOD_MEASURE = 30000;   // Timer period in ms
+Timer timerMeasure(PERIOD_MEASURE, measuring);
 
 // Ultrasonic sensor hardware connection
 const byte PIN_TRIGGER = D2;
@@ -51,9 +54,11 @@ const byte TEMPERATURE_MAX = 40;
 SonarPing sonar(PIN_TRIGGER, PING_ECHO, DISTANCE_MAX, DISTANCE_MIN);
 
 // Statistical processing
-const byte SAMPLE_COUNT = 5;
-const byte SAMPLE_DELAY = 0;
-SmoothSensorData samples(SAMPLE_COUNT, SAMPLE_DELAY);
+SmoothSensorData samples;
+RunningStatistic distanceAvg;
+RunningStatistic distanceMed(RUNNINGSTATISTIC_MEDIAN);
+RunningStatistic distanceMin(RUNNINGSTATISTIC_MINIMUM);
+RunningStatistic distanceMax(RUNNINGSTATISTIC_MAXIMUM);
 
 void setup() {
   timerMeasure.start();
@@ -61,6 +66,7 @@ void setup() {
   Particle.publish("Sketch",  String::format("%s %s", SKETCH_NAME, SKETCH_VERSION));
   Particle.publish("Library", String::format("%s %s", "SonarPing", SONARPING_VERSION));
   Particle.publish("Library", String::format("%s %s", "SmoothSensorData", SMOOTHSENSORDATA_VERSION));
+  Particle.publish("Library", String::format("%s %s", "RunningStatistic", RUNNINGSTATISTIC_VERSION));
 }
 
 void loop() {}
@@ -71,10 +77,11 @@ void measuring() {
   sonar.setTemperature(random(TEMPERATURE_MIN, TEMPERATURE_MAX + 1));
   // Measure temperature compensated distance in burst
   while (samples.registerData(sonar.getDistance()));
-  unsigned int distMed = samples.getMedian();
-  unsigned int distAvg = samples.getAverage();
-  unsigned int distMin = samples.getMinimum();
-  unsigned int distMax = samples.getMaximum();
+  // Calculate running statistics for eqivalent smoothed statistical type
+  unsigned int distMed = distanceMed.getStatistic(samples.getMedian());
+  unsigned int distAvg = distanceAvg.getStatistic(samples.getAverage());
+  unsigned int distMin = distanceMin.getStatistic(samples.getMinimum());
+  unsigned int distMax = distanceMax.getStatistic(samples.getMaximum());
   Particle.publish("Med/Avg/Min/Max", String::format("%3d/%3d/%3d/%3d", distMed, distAvg, distMin, distMax));
   Particle.publish("Temp/DistMin/DistMax", String::format("%3d/%3d/%3d", sonar.getTemperature(), sonar.getDistanceMin(), sonar.getDistanceMax()));
 }
