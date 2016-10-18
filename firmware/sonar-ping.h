@@ -32,7 +32,7 @@
  */
 #ifndef SONARPING_H
 #define SONARPING_H
-#define SONARPING_VERSION "1.0.0"
+#define SONARPING_VERSION "SonarPing 1.0.0"
 
 #include "Particle.h"
 

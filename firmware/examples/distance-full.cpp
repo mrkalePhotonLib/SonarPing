@@ -17,8 +17,7 @@
 */
 #include "sonar-ping/sonar-ping.h"
 
-#define SKETCH_VERSION "1.0.0"
-#define SKETCH_NAME "DISTANCE-FULL"
+#define SKETCH "DISTANCE-FULL 1.1.0"
 
 const unsigned int PERIOD_MEASURE = 30000;   // Timer period in ms
 Timer timerMeasure(PERIOD_MEASURE, measuring);
@@ -36,9 +35,9 @@ SonarPing sonar(PIN_TRIGGER, PING_ECHO, DISTANCE_MAX, DISTANCE_MIN);
 
 void setup() {
   timerMeasure.start();
-  // Publish sketch identification as public events
-  Particle.publish("Sketch",  String::format("%s %s", SKETCH_NAME, SKETCH_VERSION));
-  Particle.publish("Library", String::format("%s %s", "SonarPing", SONARPING_VERSION));
+  // Publish sketch and library identification as public events
+  Particle.publish("Sketch",  String(SKETCH));
+  Particle.publish("Library", String(SONARPING_VERSION));
 }
 
 void loop() {}

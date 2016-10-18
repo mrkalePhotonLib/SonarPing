@@ -36,8 +36,7 @@
 #include "smooth-sensor-data/smooth-sensor-data.h"
 #include "running-statistic/running-statistic.h"
 
-#define SKETCH_VERSION "1.0.0"
-#define SKETCH_NAME "DISTANCE-SMOOTHED-FULL"
+#define SKETCH "DISTANCE-SMOOTHED-FULL 1.1.0"
 
 const unsigned int PERIOD_MEASURE = 30000;   // Timer period in ms
 Timer timerMeasure(PERIOD_MEASURE, measuring);
@@ -62,11 +61,11 @@ RunningStatistic distanceMax(RUNNINGSTATISTIC_MAXIMUM);
 
 void setup() {
   timerMeasure.start();
-  // Publish sketch identification as public events
-  Particle.publish("Sketch",  String::format("%s %s", SKETCH_NAME, SKETCH_VERSION));
-  Particle.publish("Library", String::format("%s %s", "SonarPing", SONARPING_VERSION));
-  Particle.publish("Library", String::format("%s %s", "SmoothSensorData", SMOOTHSENSORDATA_VERSION));
-  Particle.publish("Library", String::format("%s %s", "RunningStatistic", RUNNINGSTATISTIC_VERSION));
+  // Publish sketch and library identification as public events
+  Particle.publish("Sketch",  String(SKETCH));
+  Particle.publish("Library", String(SONARPING_VERSION));
+  Particle.publish("Library", String(SMOOTHSENSORDATA_VERSION));
+  Particle.publish("Library", String(RUNNINGSTATISTIC_VERSION));
 }
 
 void loop() {}

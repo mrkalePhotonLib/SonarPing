@@ -19,7 +19,7 @@ Library for ultrasonic sensors with two control pins, preferably HC-SR04.
 
 <a id="constants"></a>
 ## Constants
-- **SONARPING\_VERSION**: Semantic library version
+- **SONARPING\_VERSION**: Name and semantic version of the library
 - **SONARPING\_NAN**: Represents undefined ping time or distance
 - **SONARPING\_DISTANCE\_MIN**: Minimal measuring distance (cm)
 - **SONARPING\_DISTANCE\_MAX**: Maximal measuring distance (cm)
