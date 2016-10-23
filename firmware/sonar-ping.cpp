@@ -37,7 +37,7 @@ uint16_t SonarPing::getDistance()
   uint16_t ping, distance;
   uint8_t  pace;
   ping = pingTime();
-  pace = soundPace();
+  pace = soundPace() * 2; // Forward and back
   // Round up distance to whole centimeters
   distance = (ping + pace - 1) / pace;
   // Check distance to limits
@@ -70,5 +70,5 @@ uint16_t SonarPing::getDistanceMax() { return _maxDistance; };
 // Sound pace corrected by temperature
 uint8_t SonarPing::soundPace(void)
 {
-  return (2000000.0 / (33130.0 + 60.6 * _temperature));
+  return (1000000.0 / (33130.0 + 60.6 * _temperature));
 }
